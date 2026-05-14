@@ -6,6 +6,7 @@ import { MetricCard } from "@/components/audit/MetricCard";
 import { SectionHeader, ProtectedCoreNotice, LoadingState } from "@/components/audit/States";
 import { RiskScoreBadge, StatusBadge, TypeBadge } from "@/components/audit/Badges";
 import { listScans, allEvidence, allOnchain, formatDate, type Scan } from "@/lib/auditApi";
+import { useT } from "@/lib/i18n";
 
 export const Route = createFileRoute("/")({
   head: () => ({ meta: [{ title: "Dashboard — SingulAI Audit Center" }] }),
@@ -13,6 +14,7 @@ export const Route = createFileRoute("/")({
 });
 
 function Dashboard() {
+  const { t } = useT();
   const [scans, setScans] = useState<Scan[] | null>(null);
   useEffect(() => { listScans().then(setScans); }, []);
 
@@ -44,24 +46,24 @@ function Dashboard() {
         <div className="relative flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
           <div className="max-w-2xl">
             <div className="inline-flex items-center gap-2 rounded-full border border-cyan/40 bg-cyan/10 px-3 py-1 text-[10px] font-medium uppercase tracking-[0.2em] text-cyan">
-              <Shield className="h-3 w-3" /> Independent Security Module
+              <Shield className="h-3 w-3" /> {t("hero.badge")}
             </div>
             <h1 className="mt-4 font-display text-3xl font-semibold tracking-tight md:text-4xl">
-              SingulAI <span className="gradient-text">Audit Center</span>
+              SingulAI <span className="gradient-text">{t("hero.title.suffix")}</span>
             </h1>
             <p className="mt-3 max-w-xl text-sm text-muted-foreground md:text-base">
-              Enterprise audit operations with cryptographic evidence and on-chain proof verification — fully isolated from the SingulAI core platform.
+              {t("hero.desc")}
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
             <Link to="/targets" className="inline-flex items-center gap-2 rounded-lg border border-cyan/40 bg-cyan/15 px-4 py-2.5 text-sm font-medium text-cyan transition-all hover:bg-cyan/25 active:scale-95">
-              <Plus className="h-4 w-4" /> New Target
+              <Plus className="h-4 w-4" /> {t("hero.newTarget")}
             </Link>
             <Link to="/scans" className="inline-flex items-center gap-2 rounded-lg bg-foreground px-4 py-2.5 text-sm font-medium text-background transition-all hover:opacity-90 active:scale-95">
-              <Play className="h-4 w-4" /> Start Audit
+              <Play className="h-4 w-4" /> {t("hero.startAudit")}
             </Link>
             <Link to="/evidence" className="inline-flex items-center gap-2 rounded-lg border border-border bg-surface px-4 py-2.5 text-sm font-medium hover:border-cyan/40 active:scale-95">
-              <Eye className="h-4 w-4" /> Evidence
+              <Eye className="h-4 w-4" /> {t("hero.evidence")}
             </Link>
           </div>
         </div>
