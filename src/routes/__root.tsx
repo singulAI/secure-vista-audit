@@ -10,6 +10,7 @@ import {
 import { useState } from "react";
 import { Sidebar, Topbar, Footer } from "@/components/audit/Layout";
 import { LanguageProvider } from "@/lib/i18n";
+import { UIProvider } from "@/lib/uiState";
 
 import appCss from "../styles.css?url";
 
@@ -93,16 +94,18 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <LanguageProvider>
-        <div className="flex min-h-screen">
-          <Sidebar open={open} onClose={() => setOpen(false)} />
-          <div className="flex min-w-0 flex-1 flex-col">
-            <Topbar onMenu={() => setOpen(true)} />
-            <main className="flex-1 px-4 py-6 md:px-8 md:py-8">
-              <Outlet />
-            </main>
-            <Footer />
+        <UIProvider>
+          <div className="flex min-h-screen w-full">
+            <Sidebar open={open} onClose={() => setOpen(false)} />
+            <div className="flex min-w-0 flex-1 flex-col">
+              <Topbar onMenu={() => setOpen(true)} />
+              <main className="mx-auto w-full max-w-[1400px] flex-1 px-3 py-4 sm:px-5 sm:py-6 lg:px-8 lg:py-8">
+                <Outlet />
+              </main>
+              <Footer />
+            </div>
           </div>
-        </div>
+        </UIProvider>
       </LanguageProvider>
     </QueryClientProvider>
   );
