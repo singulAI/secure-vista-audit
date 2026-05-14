@@ -102,8 +102,9 @@
   }
   body {
     background-image:
-      radial-gradient(1200px 600px at 0% -10%, color-mix(in oklab, var(--cyan) 12%, transparent), transparent),
-      radial-gradient(900px 500px at 100% 0%, color-mix(in oklab, var(--violet) 10%, transparent), transparent);
+      radial-gradient(1200px 600px at 0% -10%, color-mix(in oklab, var(--cyan) 14%, transparent), transparent),
+      radial-gradient(900px 500px at 100% 0%, color-mix(in oklab, var(--cyan) 8%, transparent), transparent),
+      radial-gradient(700px 400px at 50% 100%, color-mix(in oklab, var(--violet) 8%, transparent), transparent);
     background-attachment: fixed;
   }
   code, pre, .font-mono { font-family: var(--font-mono); }
