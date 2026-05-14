@@ -3,7 +3,8 @@ import { useEffect, useState } from "react";
 import { Activity, ScanSearch, Vault, Link2, Shield, Plus, Play, Eye, Server, Lock, Cpu, Database } from "lucide-react";
 import { LineChart, Line, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts";
 import { MetricCard } from "@/components/audit/MetricCard";
-import { SectionHeader, ProtectedCoreNotice, LoadingState } from "@/components/audit/States";
+import { ProtectedCoreNotice, LoadingState } from "@/components/audit/States";
+import { CollapsibleSection } from "@/components/audit/CollapsibleSection";
 import { RiskScoreBadge, StatusBadge, TypeBadge } from "@/components/audit/Badges";
 import { listScans, allEvidence, allOnchain, formatDate, type Scan } from "@/lib/auditApi";
 import { useT } from "@/lib/i18n";
@@ -37,32 +38,32 @@ function Dashboard() {
   ];
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-5 md:space-y-6">
       {/* Hero */}
-      <section className="relative overflow-hidden rounded-2xl glass-strong p-6 md:p-8">
-        <div className="absolute inset-0 grid-bg opacity-30" />
-        <div className="absolute -right-20 -top-20 h-72 w-72 rounded-full bg-cyan/20 blur-3xl" />
-        <div className="absolute -left-20 -bottom-20 h-72 w-72 rounded-full bg-violet/20 blur-3xl" />
-        <div className="relative flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+      <section className="relative overflow-hidden rounded-2xl glass-strong p-5 sm:p-6 md:p-8">
+        <div className="absolute inset-0 grid-bg opacity-25" />
+        <div className="absolute -right-20 -top-20 h-56 w-56 rounded-full bg-cyan/15 blur-3xl sm:h-72 sm:w-72" />
+        <div className="absolute -left-20 -bottom-20 h-56 w-56 rounded-full bg-violet/15 blur-3xl sm:h-72 sm:w-72" />
+        <div className="relative flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
           <div className="max-w-2xl">
             <div className="inline-flex items-center gap-2 rounded-full border border-cyan/40 bg-cyan/10 px-3 py-1 text-[10px] font-medium uppercase tracking-[0.2em] text-cyan">
               <Shield className="h-3 w-3" /> {t("hero.badge")}
             </div>
-            <h1 className="mt-4 font-display text-3xl font-semibold tracking-tight md:text-4xl">
+            <h1 className="mt-3 font-display text-2xl font-semibold tracking-tight sm:text-3xl md:text-4xl">
               SingulAI <span className="gradient-text">{t("hero.title.suffix")}</span>
             </h1>
-            <p className="mt-3 max-w-xl text-sm text-muted-foreground md:text-base">
+            <p className="mt-2.5 max-w-xl text-sm text-muted-foreground sm:mt-3 md:text-base">
               {t("hero.desc")}
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
-            <Link to="/targets" className="inline-flex items-center gap-2 rounded-lg border border-cyan/40 bg-cyan/15 px-4 py-2.5 text-sm font-medium text-cyan transition-all hover:bg-cyan/25 active:scale-95">
+            <Link to="/targets" className="inline-flex items-center gap-2 rounded-lg border border-cyan/40 bg-cyan/15 px-3.5 py-2 text-sm font-medium text-cyan transition-all hover:bg-cyan/25 active:scale-95">
               <Plus className="h-4 w-4" /> {t("hero.newTarget")}
             </Link>
-            <Link to="/scans" className="inline-flex items-center gap-2 rounded-lg bg-foreground px-4 py-2.5 text-sm font-medium text-background transition-all hover:opacity-90 active:scale-95">
+            <Link to="/scans" className="inline-flex items-center gap-2 rounded-lg bg-foreground px-3.5 py-2 text-sm font-medium text-background transition-all hover:opacity-90 active:scale-95">
               <Play className="h-4 w-4" /> {t("hero.startAudit")}
             </Link>
-            <Link to="/evidence" className="inline-flex items-center gap-2 rounded-lg border border-border bg-surface px-4 py-2.5 text-sm font-medium hover:border-cyan/40 active:scale-95">
+            <Link to="/evidence" className="inline-flex items-center gap-2 rounded-lg border border-border bg-surface px-3.5 py-2 text-sm font-medium hover:border-cyan/40 active:scale-95">
               <Eye className="h-4 w-4" /> {t("hero.evidence")}
             </Link>
           </div>
@@ -70,7 +71,7 @@ function Dashboard() {
       </section>
 
       {/* Metrics */}
-      <section className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-5">
+      <section className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 xl:grid-cols-5">
         <MetricCard label="API Status" value="Online" hint="audit.singulai.site" icon={Activity} accent="emerald" />
         <MetricCard label="Total Scans" value={scans.length} hint={`${completed.length} completed`} icon={ScanSearch} accent="cyan" />
         <MetricCard label="Evidence" value={evidence.length} hint="SHA-256 hashed" icon={Vault} accent="violet" />
@@ -79,12 +80,17 @@ function Dashboard() {
       </section>
 
       {/* Charts */}
-      <section className="grid gap-4 lg:grid-cols-3">
-        <div className="rounded-xl glass p-5 lg:col-span-2">
-          <SectionHeader title="Risk Trend" description="Composite risk score across the last 8 evaluations" icon={Activity} />
-          <div className="h-64">
+      <div className="grid gap-4 lg:grid-cols-3">
+        <CollapsibleSection
+          id="risk-trend"
+          title="Risk Trend"
+          description="Composite risk score across the last 8 evaluations"
+          icon={Activity}
+          className="lg:col-span-2"
+        >
+          <div className="h-56 sm:h-64">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={trendData}>
+              <LineChart data={trendData} margin={{ top: 5, right: 8, left: -10, bottom: 0 }}>
                 <defs>
                   <linearGradient id="riskGrad" x1="0" y1="0" x2="1" y2="0">
                     <stop offset="0%" stopColor="var(--cyan)" />
@@ -99,12 +105,12 @@ function Dashboard() {
               </LineChart>
             </ResponsiveContainer>
           </div>
-        </div>
-        <div className="rounded-xl glass p-5">
-          <SectionHeader title="Findings Severity" description="Distribution across all audits" icon={Shield} />
-          <div className="h-64">
+        </CollapsibleSection>
+
+        <CollapsibleSection id="findings-sev" title="Findings Severity" description="Distribution across all audits" icon={Shield}>
+          <div className="h-56 sm:h-64">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={sevData}>
+              <BarChart data={sevData} margin={{ top: 5, right: 8, left: -15, bottom: 0 }}>
                 <CartesianGrid stroke="var(--grid)" strokeDasharray="3 3" vertical={false} />
                 <XAxis dataKey="name" stroke="var(--muted-foreground)" fontSize={11} />
                 <YAxis stroke="var(--muted-foreground)" fontSize={11} />
@@ -113,18 +119,18 @@ function Dashboard() {
               </BarChart>
             </ResponsiveContainer>
           </div>
-        </div>
-      </section>
+        </CollapsibleSection>
+      </div>
 
       {/* Latest audits */}
-      <section className="rounded-xl glass p-5">
-        <SectionHeader
-          title="Latest Audits"
-          description="Most recent scan executions"
-          icon={ScanSearch}
-          action={<Link to="/scans" className="text-xs text-cyan hover:underline">View all →</Link>}
-        />
-        <div className="-mx-5 overflow-x-auto px-5 scrollbar-thin">
+      <CollapsibleSection
+        id="latest-audits"
+        title="Latest Audits"
+        description="Most recent scan executions"
+        icon={ScanSearch}
+        action={<Link to="/scans" className="text-xs text-cyan hover:underline whitespace-nowrap">View all →</Link>}
+      >
+        <div className="-mx-1 overflow-x-auto scrollbar-thin">
           <table className="w-full min-w-[640px] text-sm">
             <thead>
               <tr className="border-b border-border/60 text-left text-[11px] uppercase tracking-wider text-muted-foreground">
@@ -154,13 +160,19 @@ function Dashboard() {
             </tbody>
           </table>
         </div>
-      </section>
+      </CollapsibleSection>
 
       {/* Architecture */}
-      <section className="grid gap-4 lg:grid-cols-3">
-        <div className="rounded-xl glass p-6 lg:col-span-2">
-          <SectionHeader title="Secure Architecture" description="Why scanners never run inside the SingulAI core" icon={Lock} />
-          <div className="grid gap-4 sm:grid-cols-3">
+      <div className="grid gap-4 lg:grid-cols-3">
+        <CollapsibleSection
+          id="architecture"
+          title="Secure Architecture"
+          description="Why scanners never run inside the SingulAI core"
+          icon={Lock}
+          defaultOpen={false}
+          className="lg:col-span-2"
+        >
+          <div className="grid gap-3 sm:grid-cols-3">
             {[
               { icon: Cpu, label: "SingulAI Core", note: "Read-only consumer of audit reports", color: "violet" },
               { icon: Server, label: "Audit Center", note: "Independent scanning runtime", color: "cyan" },
@@ -173,13 +185,15 @@ function Dashboard() {
               </div>
             ))}
           </div>
-          <div className="mt-5 rounded-lg border border-border/60 bg-background/40 p-4 font-mono text-[11px] leading-relaxed text-muted-foreground">
+          <div className="mt-4 rounded-lg border border-border/60 bg-background/40 p-3 font-mono text-[11px] leading-relaxed text-muted-foreground overflow-x-auto scrollbar-thin">
             <div className="mb-2 text-cyan">// data flow</div>
-            target → <span className="text-emerald">audit-center</span> → evidence(SHA-256) → onchain-proof → <span className="text-violet">singulai-core (read-only)</span>
+            <div className="whitespace-nowrap">
+              target → <span className="text-emerald">audit-center</span> → evidence(SHA-256) → onchain-proof → <span className="text-violet">singulai-core (read-only)</span>
+            </div>
           </div>
-        </div>
+        </CollapsibleSection>
         <ProtectedCoreNotice />
-      </section>
+      </div>
     </div>
   );
 }
