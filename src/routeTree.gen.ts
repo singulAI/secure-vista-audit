@@ -10,12 +10,22 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TargetsRouteImport } from './routes/targets'
+import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ScansRouteImport } from './routes/scans'
+import { Route as ReportsRouteImport } from './routes/reports'
+import { Route as OnchainRouteImport } from './routes/onchain'
+import { Route as EvidenceRouteImport } from './routes/evidence'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ScansIdRouteImport } from './routes/scans.$id'
 
 const TargetsRoute = TargetsRouteImport.update({
   id: '/targets',
   path: '/targets',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ScansRoute = ScansRouteImport.update({
@@ -23,39 +33,103 @@ const ScansRoute = ScansRouteImport.update({
   path: '/scans',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ReportsRoute = ReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnchainRoute = OnchainRouteImport.update({
+  id: '/onchain',
+  path: '/onchain',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EvidenceRoute = EvidenceRouteImport.update({
+  id: '/evidence',
+  path: '/evidence',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ScansIdRoute = ScansIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => ScansRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/scans': typeof ScansRoute
+  '/evidence': typeof EvidenceRoute
+  '/onchain': typeof OnchainRoute
+  '/reports': typeof ReportsRoute
+  '/scans': typeof ScansRouteWithChildren
+  '/settings': typeof SettingsRoute
   '/targets': typeof TargetsRoute
+  '/scans/$id': typeof ScansIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/scans': typeof ScansRoute
+  '/evidence': typeof EvidenceRoute
+  '/onchain': typeof OnchainRoute
+  '/reports': typeof ReportsRoute
+  '/scans': typeof ScansRouteWithChildren
+  '/settings': typeof SettingsRoute
   '/targets': typeof TargetsRoute
+  '/scans/$id': typeof ScansIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/scans': typeof ScansRoute
+  '/evidence': typeof EvidenceRoute
+  '/onchain': typeof OnchainRoute
+  '/reports': typeof ReportsRoute
+  '/scans': typeof ScansRouteWithChildren
+  '/settings': typeof SettingsRoute
   '/targets': typeof TargetsRoute
+  '/scans/$id': typeof ScansIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/scans' | '/targets'
+  fullPaths:
+    | '/'
+    | '/evidence'
+    | '/onchain'
+    | '/reports'
+    | '/scans'
+    | '/settings'
+    | '/targets'
+    | '/scans/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/scans' | '/targets'
-  id: '__root__' | '/' | '/scans' | '/targets'
+  to:
+    | '/'
+    | '/evidence'
+    | '/onchain'
+    | '/reports'
+    | '/scans'
+    | '/settings'
+    | '/targets'
+    | '/scans/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/evidence'
+    | '/onchain'
+    | '/reports'
+    | '/scans'
+    | '/settings'
+    | '/targets'
+    | '/scans/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  ScansRoute: typeof ScansRoute
+  EvidenceRoute: typeof EvidenceRoute
+  OnchainRoute: typeof OnchainRoute
+  ReportsRoute: typeof ReportsRoute
+  ScansRoute: typeof ScansRouteWithChildren
+  SettingsRoute: typeof SettingsRoute
   TargetsRoute: typeof TargetsRoute
 }
 
@@ -68,11 +142,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TargetsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/scans': {
       id: '/scans'
       path: '/scans'
       fullPath: '/scans'
       preLoaderRoute: typeof ScansRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reports': {
+      id: '/reports'
+      path: '/reports'
+      fullPath: '/reports'
+      preLoaderRoute: typeof ReportsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onchain': {
+      id: '/onchain'
+      path: '/onchain'
+      fullPath: '/onchain'
+      preLoaderRoute: typeof OnchainRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/evidence': {
+      id: '/evidence'
+      path: '/evidence'
+      fullPath: '/evidence'
+      preLoaderRoute: typeof EvidenceRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -82,12 +184,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/scans/$id': {
+      id: '/scans/$id'
+      path: '/$id'
+      fullPath: '/scans/$id'
+      preLoaderRoute: typeof ScansIdRouteImport
+      parentRoute: typeof ScansRoute
+    }
   }
 }
 
+interface ScansRouteChildren {
+  ScansIdRoute: typeof ScansIdRoute
+}
+
+const ScansRouteChildren: ScansRouteChildren = {
+  ScansIdRoute: ScansIdRoute,
+}
+
+const ScansRouteWithChildren = ScansRoute._addFileChildren(ScansRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  ScansRoute: ScansRoute,
+  EvidenceRoute: EvidenceRoute,
+  OnchainRoute: OnchainRoute,
+  ReportsRoute: ReportsRoute,
+  ScansRoute: ScansRouteWithChildren,
+  SettingsRoute: SettingsRoute,
   TargetsRoute: TargetsRoute,
 }
 export const routeTree = rootRouteImport
