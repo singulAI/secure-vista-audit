@@ -3,19 +3,20 @@ import { LayoutDashboard, Crosshair, ScanSearch, Vault, Link2, FileText, Setting
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import logo from "@/assets/singulai-logo.jpeg";
-
-const nav = [
-  { to: "/", label: "Dashboard", icon: LayoutDashboard },
-  { to: "/targets", label: "Targets", icon: Crosshair },
-  { to: "/scans", label: "Scans", icon: ScanSearch },
-  { to: "/evidence", label: "Evidence Vault", icon: Vault },
-  { to: "/onchain", label: "On-chain Proofs", icon: Link2 },
-  { to: "/reports", label: "Reports", icon: FileText },
-  { to: "/settings", label: "Settings", icon: Settings },
-];
+import { LanguageSwitch, useT } from "@/lib/i18n";
 
 export function Sidebar({ open, onClose }: { open: boolean; onClose: () => void }) {
   const path = useRouterState({ select: (s) => s.location.pathname });
+  const { t } = useT();
+  const nav = [
+    { to: "/", label: t("nav.dashboard"), icon: LayoutDashboard },
+    { to: "/targets", label: t("nav.targets"), icon: Crosshair },
+    { to: "/scans", label: t("nav.scans"), icon: ScanSearch },
+    { to: "/evidence", label: t("nav.evidence"), icon: Vault },
+    { to: "/onchain", label: t("nav.onchain"), icon: Link2 },
+    { to: "/reports", label: t("nav.reports"), icon: FileText },
+    { to: "/settings", label: t("nav.settings"), icon: Settings },
+  ];
   return (
     <>
       {open && <div className="fixed inset-0 z-30 bg-background/80 backdrop-blur-sm md:hidden" onClick={onClose} />}
@@ -29,8 +30,8 @@ export function Sidebar({ open, onClose }: { open: boolean; onClose: () => void 
           <Link to="/" className="flex items-center gap-2.5" onClick={onClose}>
             <img src={logo} alt="SingulAI" className="h-9 w-9 rounded-md object-cover ring-1 ring-cyan/40" />
             <div className="leading-tight">
-              <div className="font-display text-sm font-semibold tracking-wide">SingulAI</div>
-              <div className="text-[10px] uppercase tracking-[0.2em] text-cyan">Audit Center</div>
+              <div className="font-display text-sm font-semibold tracking-[0.18em]">SINGULAI</div>
+              <div className="text-[10px] uppercase tracking-[0.2em] text-cyan">{t("brand.subtitle")}</div>
             </div>
           </Link>
           <button className="rounded-md border border-border p-1.5 text-muted-foreground md:hidden" onClick={onClose}>
@@ -40,7 +41,7 @@ export function Sidebar({ open, onClose }: { open: boolean; onClose: () => void 
 
         <div className="mx-5 mt-4 rounded-lg border border-cyan/30 bg-cyan/10 px-3 py-2 text-[10px] uppercase tracking-wider text-cyan">
           <div className="flex items-center gap-1.5">
-            <ShieldCheck className="h-3.5 w-3.5" /> Independent Security Module
+            <ShieldCheck className="h-3.5 w-3.5" /> {t("sidebar.module")}
           </div>
         </div>
 
@@ -68,6 +69,7 @@ export function Sidebar({ open, onClose }: { open: boolean; onClose: () => void 
         </nav>
 
         <div className="border-t border-border/60 p-4 text-[10px] leading-relaxed text-muted-foreground">
+          <div className="mb-2"><LanguageSwitch /></div>
           <div className="font-mono text-[10px] text-muted-foreground/70">v1.0 · audit.singulai.site</div>
           <div className="mt-1">DEV — rodrigo.run</div>
         </div>
@@ -77,6 +79,7 @@ export function Sidebar({ open, onClose }: { open: boolean; onClose: () => void 
 }
 
 export function Topbar({ onMenu }: { onMenu: () => void }) {
+  const { t } = useT();
   const [health, setHealth] = useState<"checking" | "online" | "mock">("checking");
   useEffect(() => {
     import("@/lib/auditApi").then(({ getHealth, onMockChange, isMockMode }) => {
@@ -94,11 +97,12 @@ export function Topbar({ onMenu }: { onMenu: () => void }) {
       </button>
 
       <div className="hidden md:block">
-        <div className="font-display text-sm font-medium">Security Operations</div>
-        <div className="text-[11px] text-muted-foreground">Audit · Evidence · On-chain proofs</div>
+        <div className="font-display text-sm font-medium tracking-wide">{t("topbar.title")}</div>
+        <div className="text-[11px] text-muted-foreground">{t("topbar.subtitle")}</div>
       </div>
 
       <div className="ml-auto flex items-center gap-3">
+        <LanguageSwitch />
         <div className={cn(
           "hidden items-center gap-2 rounded-full border px-3 py-1.5 text-[11px] font-medium sm:flex",
           health === "online" && "border-emerald/40 bg-emerald/10 text-emerald",
@@ -111,7 +115,7 @@ export function Topbar({ onMenu }: { onMenu: () => void }) {
             health === "mock" && "bg-amber",
             health === "checking" && "bg-muted-foreground",
           )} />
-          {health === "online" ? "API Online" : health === "mock" ? "Mock Mode" : "Checking…"}
+          {health === "online" ? t("topbar.online") : health === "mock" ? t("topbar.mock") : t("topbar.checking")}
         </div>
         <div className="rounded-full border border-violet/40 bg-violet/10 px-3 py-1.5 text-[11px] font-medium text-violet">
           SOC · L2
@@ -122,9 +126,10 @@ export function Topbar({ onMenu }: { onMenu: () => void }) {
 }
 
 export function Footer() {
+  const { t } = useT();
   return (
     <footer className="border-t border-border/60 px-6 py-4 text-center text-xs text-muted-foreground">
-      DEV — rodrigo.run © 2026 SingulAI — Todos os direitos reservados
+      {t("footer")}
     </footer>
   );
 }
