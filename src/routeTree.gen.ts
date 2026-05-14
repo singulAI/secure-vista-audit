@@ -9,8 +9,20 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TargetsRouteImport } from './routes/targets'
+import { Route as ScansRouteImport } from './routes/scans'
 import { Route as IndexRouteImport } from './routes/index'
 
+const TargetsRoute = TargetsRouteImport.update({
+  id: '/targets',
+  path: '/targets',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ScansRoute = ScansRouteImport.update({
+  id: '/scans',
+  path: '/scans',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -19,28 +31,50 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/scans': typeof ScansRoute
+  '/targets': typeof TargetsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/scans': typeof ScansRoute
+  '/targets': typeof TargetsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/scans': typeof ScansRoute
+  '/targets': typeof TargetsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/scans' | '/targets'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/scans' | '/targets'
+  id: '__root__' | '/' | '/scans' | '/targets'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ScansRoute: typeof ScansRoute
+  TargetsRoute: typeof TargetsRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/targets': {
+      id: '/targets'
+      path: '/targets'
+      fullPath: '/targets'
+      preLoaderRoute: typeof TargetsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/scans': {
+      id: '/scans'
+      path: '/scans'
+      fullPath: '/scans'
+      preLoaderRoute: typeof ScansRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -53,7 +87,19 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ScansRoute: ScansRoute,
+  TargetsRoute: TargetsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
